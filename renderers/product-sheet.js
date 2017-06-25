@@ -11,6 +11,8 @@ const {
   LIGHT_ITALIC
 } = require('../constants/fonts');
 
+const GlobalElements = require('./partials/globals');
+
 const PAGE_WIDTH = 612;
 const PAGE_HEIGHT = 792;
 
@@ -32,6 +34,7 @@ const ProduceSheet = function(doc, data, options) {
       .fillColor('defaultColor');
 
     header(data.date);
+    GlobalElements(doc, options).render();
   }
 
   function header(date, x = margin, y = margin) {
@@ -53,7 +56,7 @@ const ProduceSheet = function(doc, data, options) {
     doc
       .font(SEMI_BOLD_ITALIC)
       .fontSize(fontSize - 3)
-      .text(`#0${index}.`, start_x + 8, start_y + 10.5);
+      .text(`#${index}.`, start_x + 8, start_y + 10.5);
 
     doc
       .font(SEMI_BOLD_ITALIC)
@@ -69,13 +72,25 @@ const ProduceSheet = function(doc, data, options) {
 
     for(var i = 0; i < product.children.length; i++) {
       const child = product.children[i];
-      const new_y = start_y + 40 + (i * 18);
+      const new_y = start_y + 40 + (i * 20);
       const columns = [
-        {label:`${i + 1}.`, font:LIGHT_ITALIC, size:fontSize - 4, x:8, y:8},
-        {label:child.label, font:REGULAR, size:fontSize - 4, x:25, y:8},
-        {label:child.q, font:REGULAR, size:fontSize - 4, x:WIDTH - 130, y:8, options:{width: 100, align:'right'}},
-        {label:child.uom, font:LIGHT_ITALIC, size:fontSize - 8, x:WIDTH - 60, y:12, options:{width: 50, align:'right'}}
-      ]
+        {label:`${i + 1}.`, font:LIGHT_ITALIC, size:fontSize - 6, x:8, y:10},
+        {label:child.label, font:REGULAR, size:fontSize - 4, x:20, y:8},
+      ];
+
+      const first = child.converted[0];
+
+      columns.push({label:first.q, font:BOLD, size:fontSize - 2, x:WIDTH - 190, y:8, options:{width: 100, align:'right'}})
+      columns.push({label:first.uom, font:ITALIC, size:fontSize - 4, x:WIDTH - 85, y:10, options:{width: 50, align:'left'}})
+
+      const second = child.converted[1];
+
+      if(second) {
+        columns.push({label:second.q, font:BOLD, size:fontSize - 2, x:WIDTH - 140, y:8, options:{width: 100, align:'right'}})
+        columns.push({label:second.uom, font:ITALIC, size:fontSize - 4, x:WIDTH - 35, y:10, options:{width: 50, align:'left'}})
+      }
+
+      columns
       .forEach(column => {
         const {
           label,
@@ -122,7 +137,6 @@ const ProduceSheet = function(doc, data, options) {
     createNewPage();
 
     for(var i = 0; i < products.length; i++) {
-
       const page = Math.floor(i / perPage);
 
       if(lastPage < page) {

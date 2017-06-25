@@ -37,7 +37,7 @@ const Factory = function() {
           return doc;
         },
         build(data) {
-          LineShet(doc, data.ingredients, data.date, 'Ingredient Prep Sheet', config).render();
+          LineShet(doc, data.ingredients, data.date, 'Item Sheet', config).render();
           LineShet(doc, data.recipes, data.date, 'Juice Prep Sheet', config).render();
           ProductSheet(doc, data, config).render();
 

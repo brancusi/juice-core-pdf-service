@@ -59,10 +59,11 @@ const LineSheet = function(doc, collection, date, title, options) {
       });
   }
 
-  function strokeH(x, y, width) {
+  function strokeH(x, y, width, options = {width: 5, space: 5}) {
     doc
       .moveTo(x, y)
       .lineTo(x + width, y)
+      .dash(options.width, {space:options.space})
       .stroke();
   }
 
@@ -80,16 +81,33 @@ const LineSheet = function(doc, collection, date, title, options) {
     strokeH(x, y + 20, PAGE_WIDTH - (margin * 2));
 
     for(var i = 0; i < nodes.length; i++) {
-      const ing = nodes[i];
+      const node = nodes[i];
+
       const rowData = [
         {label:`${i + 1}.`, font:ITALIC, size:fontSize - 5, x:0, y:5},
-        {label:ing.label, font:SEMI_BOLD, size:fontSize, x:35, y:0},
-
-        {label:ing.q, font:SEMI_BOLD, size:fontSize, x:400, y:0, options:{width: 100, align:'right'}},
-        {label:ing.uom, font:ITALIC, size:fontSize-5, x:510, y:5, options:{width: 50, align:'left'}}
+        {label:node.label, font:SEMI_BOLD, size:fontSize, x:35, y:0},
       ];
 
-      buildRow(x, y + (i * 25) + 30, rowData);
+      const first = node.converted[0];
+
+      rowData.push({label:first.q, font:SEMI_BOLD, size:fontSize, x:340, y:0, options:{width: 100, align:'right'}})
+      rowData.push({label:first.uom, font:ITALIC, size:fontSize-5, x:450, y:5, options:{width: 50, align:'left'}})
+
+      const second = node.converted[1];
+
+      if(second) {
+        rowData.push({label:second.q, font:SEMI_BOLD, size:fontSize, x:400, y:0, options:{width: 100, align:'right'}})
+        rowData.push({label:second.uom, font:ITALIC, size:fontSize-5, x:510, y:5, options:{width: 50, align:'left'}})
+      }
+
+      const labelWidth = doc
+        .font(SEMI_BOLD)
+        .fontSize(fontSize)
+        .widthOfString(node.label);
+
+      strokeH(80 + labelWidth, y + (i * 20) + 46, 360 - labelWidth, {space: 2, width:2});
+
+      buildRow(x, y + (i * 20) + 30, rowData);
     }
 
   }
