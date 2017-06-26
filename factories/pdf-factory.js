@@ -4,9 +4,6 @@ const Factory = function() {
   const PDFDocument = require('pdfkit');
   const doc = new PDFDocument({autoFirstPage:false});
 
-  const LineShet = require('../renderers/line-sheet');
-  const ProductSheet = require('../renderers/product-sheet');
-
   const config = {
     margin: 35,
     fontSize: 15,
@@ -37,10 +34,11 @@ const Factory = function() {
           return doc;
         },
         build(data) {
-          LineShet(doc, data.ingredients, data.date, 'Item Sheet', config).render();
-          LineShet(doc, data.recipes, data.date, 'Juice Prep Sheet', config).render();
-          ProductSheet(doc, data, config).render();
-
+          data
+            .forEach(group => {
+              const Renderer = require(`../renderers/${group.renderer}`);
+              Renderer(doc, group, config).render();
+            });
           doc.end();
         }
       }
