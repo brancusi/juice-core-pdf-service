@@ -88,7 +88,7 @@ const Renderer = function(doc, data, options) {
 
   function buildTableHeader(label, x, y) {
     buildRow(x, y, [{label, font:SEMI_BOLD_ITALIC, size:fontSize - 5}]);
-    strokeH(x, y + 16, COLUMN_WIDTH);
+    // strokeH(x, y + 16, COLUMN_WIDTH);
   }
 
   function prepNextPosition(position, group) {
@@ -128,13 +128,14 @@ const Renderer = function(doc, data, options) {
         const precise = cur.q.toFixed(1);
 
         const rowData = [
-            {label:`${acc.i + 1}.`, font:ITALIC, size:fontSize - 5, x:0, y:5},
-            {label:cur.label, font:SEMI_BOLD, size:fontSize - 3, x:20, y:3},
+            {label:cur.label, font:SEMI_BOLD, size:fontSize - 3, x:0, y:3},
             {label:precise, font:SEMI_BOLD, size:fontSize, x:COLUMN_WIDTH - 80, y:0, options:{width: 50, align:'right'}},
             {label:cur.uom, font:ITALIC, size:fontSize-5, x:COLUMN_WIDTH - 20, y:5, options:{width: 50, align:'left'}}
           ];
 
         const lastCoords = buildRow(x, y, rowData);
+
+        strokeH(x, y, COLUMN_WIDTH);
 
         return {x, y:y + lastCoords.height, i:acc.i + 1};
       }, {x: start_x, y: start_y + 20, i: 0});

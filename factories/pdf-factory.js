@@ -33,8 +33,9 @@ const Factory = function() {
         pdf() {
           return doc;
         },
-        build(data) {
-          data
+        build(payload) {
+          payload
+            .data
             .forEach(group => {
               const Renderer = require(`../renderers/${group.renderer}`);
               Renderer(doc, group, config).render();
