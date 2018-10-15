@@ -36,6 +36,13 @@ const Factory = function() {
         build(payload) {
           payload
             .data
+
+            // For Testing
+            // .filter(group => {
+            //   return group.renderer === "detailed/productionDetails";
+            // })
+
+
             .forEach(group => {
               const Renderer = require(`../renderers/${group.renderer}`);
               Renderer(doc, group, config).render();
