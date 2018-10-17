@@ -3,6 +3,10 @@
 const v = require('voca');
 
 const {
+  formatPrecision
+} = require('../../utils/math');
+
+const {
   BOLD,
   LIGHT,
   EXTRA_BOLD,
@@ -127,11 +131,9 @@ const Renderer = function(doc, data, options) {
       .reduce((acc, cur) => {
         const { x, y } = prepNextPosition(acc, group);
 
-        const precise = cur.q.toFixed(1);
-
         const rowData = [
             {label:v.truncate(cur.label, 25), font:SEMI_BOLD, size:fontSize - 3, x:0, y:3},
-            {label:precise, font:SEMI_BOLD, size:fontSize, x:COLUMN_WIDTH - 90, y:0, options:{width: 60, align:'right'}},
+            {label:formatPrecision(cur.q, 5), font:SEMI_BOLD, size:fontSize, x:COLUMN_WIDTH - 90, y:0, options:{width: 60, align:'right'}},
             {label:cur.uom, font:ITALIC, size:fontSize-5, x:COLUMN_WIDTH - 20, y:5, options:{width: 50, align:'left'}}
           ];
 

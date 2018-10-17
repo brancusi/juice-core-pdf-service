@@ -151,7 +151,8 @@ const Renderer = function(doc, data, options) {
         const rowData = [
             {label:`${acc.i + 1}.`, font:ITALIC, size:FONT_SIZE - FONT_SIZE/2, x:0, y:FONT_SIZE/2},
             {label:`${cur.label}`, font:SEMI_BOLD, size:FONT_SIZE - 3, x:FONT_SIZE, y:3},
-            {label:formatPrecision(cur.q), font:SEMI_BOLD, size:FONT_SIZE, x:MARGIN, y:0, options:{width: COLUMN_WIDTH - MARGIN - PADDING, align:'right'}},
+            {label:`${cur.notes ? cur.notes : ''}`, font:ITALIC, size:FONT_SIZE - FONT_SIZE/2, x:MARGIN + 200, y:FONT_SIZE/2},
+            {label:formatPrecision(cur.q, 5), font:SEMI_BOLD, size:FONT_SIZE, x:MARGIN, y:0, options:{width: COLUMN_WIDTH - MARGIN - PADDING, align:'right'}},
             {label:cur.uom, font:ITALIC, size:FONT_SIZE-5, x:COLUMN_WIDTH - 10, y:5, options:{width: 50, align:'left'}}
           ];
 
