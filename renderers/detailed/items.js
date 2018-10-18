@@ -1,10 +1,12 @@
 'use strict';
 
 const v = require('voca');
+const R = require('ramda');
+const _ = require('lodash');
 
 const {
-  formatPrecision
-} = require('../../utils/math');
+  formatReadable
+} = require('../../utils/formatting');
 
 const {
   BOLD,
@@ -19,6 +21,7 @@ const {
 const PAGE_WIDTH = 612;
 const PAGE_HEIGHT = 792;
 const COLUMN_WIDTH = 250;
+const GROUP_GAP = 25;
 
 const Renderer = function(doc, data, options) {
   const {
@@ -93,11 +96,12 @@ const Renderer = function(doc, data, options) {
   }
 
   function buildTableHeader(label, x, y) {
-    buildRow(x, y, [{label, font:SEMI_BOLD_ITALIC, size:fontSize - 5}]);
+
+    buildRow(x, y, [{label:v.capitalize(label), font:SEMI_BOLD_ITALIC, size:fontSize}]);
     // strokeH(x, y + 16, COLUMN_WIDTH);
   }
 
-  function prepNextPosition(position, group) {
+  function prepNextPosition(position, title, group) {
     let x = position.x;
     let y = position.y;
     const numColumns = 2;
@@ -112,28 +116,28 @@ const Renderer = function(doc, data, options) {
       x = margin;
       y = margin + 50;
 
-      buildTableHeader(`${group.label} cont'd`, x, margin + 30);
+      buildTableHeader(`${v.capitalize(title)} cont'd`, x, margin + 30);
     } else if(pastHeight) {
       x = PAGE_WIDTH - (COLUMN_WIDTH + margin);
       y = margin + 50;
 
-      buildTableHeader(`${group.label} cont'd`, x, margin + 30);
+      buildTableHeader(`${v.capitalize(title)} cont'd`, x, margin + 30);
     }
 
     return {x, y};
   }
 
-  function buildTable(group, start_x = margin, start_y = margin + 30) {
+  function buildTable(title, group, start_x = margin, start_y = margin + 30) {
 
-    buildTableHeader(group.label, start_x, start_y);
+    buildTableHeader(title, start_x, start_y);
 
-    return group.collection
+    const rowCoords = group
       .reduce((acc, cur) => {
-        const { x, y } = prepNextPosition(acc, group);
+        const { x, y } = prepNextPosition(acc, title, group);
 
         const rowData = [
             {label:v.truncate(cur.label, 25), font:SEMI_BOLD, size:fontSize - 3, x:0, y:3},
-            {label:formatPrecision(cur.q, 5), font:SEMI_BOLD, size:fontSize, x:COLUMN_WIDTH - 90, y:0, options:{width: 60, align:'right'}},
+            {label:formatReadable(cur.q), font:SEMI_BOLD, size:fontSize, x:COLUMN_WIDTH - 90, y:0, options:{width: 60, align:'right'}},
             {label:cur.uom, font:ITALIC, size:fontSize-5, x:COLUMN_WIDTH - 20, y:5, options:{width: 50, align:'left'}}
           ];
 
@@ -142,17 +146,34 @@ const Renderer = function(doc, data, options) {
         strokeH(x, y, COLUMN_WIDTH);
 
         return {x, y:y + lastCoords.height, i:acc.i + 1};
-      }, {x: start_x, y: start_y + 20, i: 0});
+      }, {x: start_x, y: start_y + 20, i: 0})
+
+      return Object.assign({}, rowCoords, {y:rowCoords.y + GROUP_GAP});
+
+  }
+
+  const byTags = R.groupBy(obj => obj.tags || obj.type);
+
+  function buildGroup(data) {
+    // createNewPage(data['label']);
+
+    _.reduce(byTags(data['collection']), (acc, cur, key) => {
+      return buildTable(key, cur, acc.x, acc.y);
+    }, {x: margin, y: margin + 30})
   }
 
   return {
     render() {
       createNewPage(data.title);
-      data.collection
-        .reduce((acc, cur) => {
-          const position = buildTable(cur, acc.x, acc.y);
-          return {x: position.x, y:position.y + 15};
-        }, {x:undefined, y:undefined})
+
+
+      data.collection.forEach(buildGroup)
+
+      // data.collection
+      //   .reduce((acc, cur) => {
+      //     const position = buildTable(cur, acc.x, acc.y);
+      //     return {x: position.x, y:position.y + 15};
+      //   }, {x:undefined, y:undefined})
     }
   }
 }
