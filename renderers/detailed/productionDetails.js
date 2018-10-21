@@ -156,7 +156,8 @@ const Renderer = function(doc, data, options) {
 
   return {
     render() {
-      createNewPage(`${data.title} - ${data.date}`);
+      const formattedDate = moment(data.date).format('dddd - MM/DD/YY');
+      createNewPage(`${data.title} - ${formattedDate}`);
       buildTable(data.collection, data.date);
     }
   }

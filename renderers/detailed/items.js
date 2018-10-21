@@ -47,7 +47,7 @@ const Renderer = function(doc, data, options) {
     doc
       .font(REGULAR)
       .fontSize(fontSize)
-      .text(title, margin, margin);
+      .text(title, x, y);
   }
 
   function buildRow(start_x, start_y, columns) {
