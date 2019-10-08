@@ -21,7 +21,10 @@ module.exports.index = (event, context, callback) => {
   });
 
   upload.send(function (uploadError) {
-    const headers = { "Access-Control-Allow-Origin" : "*" };
+    const headers = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Credentials': true,
+    };
 
     if(uploadError) {
       callback(null, {
