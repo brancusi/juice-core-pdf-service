@@ -34,10 +34,10 @@ const Renderer = function(doc, data, options) {
   function createNewPage(title) {
     doc
       .addPage({margin:0})
-      .lineWidth(.25)
+      .lineWidth(1)
       .fillOpacity(0.8)
       .strokeColor(defaultColor)
-      .dash(5, {space: 5})
+      // .dash(5, {space: 5})
       .fillColor('defaultColor');
 
     header(title);
@@ -91,7 +91,7 @@ const Renderer = function(doc, data, options) {
     doc
       .moveTo(x, y)
       .lineTo(x + width, y)
-      .dash(options.width, {space:options.space})
+      // .dash(options.width, {space:options.space})
       .stroke();
   }
 

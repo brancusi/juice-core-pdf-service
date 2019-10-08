@@ -1,3 +1,5 @@
+org: brancusi
+app: juice-core-dev
 service: juicecore
 
 custom:
@@ -5,7 +7,7 @@ custom:
 
 provider:
   name: aws
-  runtime: nodejs6.10
+  runtime: nodejs8.10
   region: us-west-1
   iamRoleStatements:
     - Effect: Allow
