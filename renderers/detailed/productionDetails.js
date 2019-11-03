@@ -130,7 +130,8 @@ const Renderer = function(doc, data, options) {
   }
 
   function buildTable(group, date, start_x = MARGIN, start_y = MARGIN + 30) {
-
+    
+    
     return group
       .reduce((acc, cur) => {
         const { x, y } = prepNextPosition(acc, group);
@@ -145,7 +146,7 @@ const Renderer = function(doc, data, options) {
             {label:formattedDate, font:SEMI_BOLD, size:FONT_SIZE - 3, x:340, y:3},
             {label:precise, font:SEMI_BOLD, size:FONT_SIZE, x:MARGIN - 40, y:0, options:{width: COLUMN_WIDTH - (MARGIN * 2) - (PADDING * 2), align:'right'}}
           ];
-
+        
         const lastCoords = buildRow(x, y, rowData);
 
         strokeH(x, y - LEADING/2, COLUMN_WIDTH - (MARGIN * 2), {width: 2, space: 20});

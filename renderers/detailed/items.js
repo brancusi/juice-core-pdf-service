@@ -62,7 +62,7 @@ const Renderer = function(doc, data, options) {
           options = {}
         } = cur;
 
-        const castLabel = String(label);
+        const castLabel = label;
 
         doc
           .font(font)
@@ -80,8 +80,8 @@ const Renderer = function(doc, data, options) {
             .heightOfString(castLabel);
 
         return {
-          width: Math.max(fieldWidth + x, acc.width),
-          height: Math.max(fieldHeight + y, acc.height)
+          width: Math.round(Math.max(fieldWidth + x, acc.width)),
+          height: Math.round(Math.max(fieldHeight + y, acc.height))
         };
 
       }, {width:0, height:0});
@@ -108,7 +108,7 @@ const Renderer = function(doc, data, options) {
 
     const currentColumn = Math.ceil(x/COLUMN_WIDTH);
 
-    const pastHeight = y > PAGE_HEIGHT - 60;
+    const pastHeight = y > PAGE_HEIGHT - 80;
     const needsNewPage = (currentColumn >= numColumns) && pastHeight;
 
     if(needsNewPage) {
@@ -130,7 +130,7 @@ const Renderer = function(doc, data, options) {
   function buildTable(title, group, start_x = margin, start_y = margin + 30) {
 
     buildTableHeader(title, start_x, start_y);
-
+    
     const rowCoords = group
       .reduce((acc, cur) => {
         const { x, y } = prepNextPosition(acc, title, group);
@@ -140,7 +140,7 @@ const Renderer = function(doc, data, options) {
             {label:formatReadable(cur.q), font:SEMI_BOLD, size:fontSize, x:COLUMN_WIDTH - 90, y:0, options:{width: 60, align:'right'}},
             {label:cur.uom, font:ITALIC, size:fontSize-5, x:COLUMN_WIDTH - 20, y:5, options:{width: 50, align:'left'}}
           ];
-
+ 
         const lastCoords = buildRow(x, y, rowData);
 
         strokeH(x, y, COLUMN_WIDTH);
@@ -152,20 +152,24 @@ const Renderer = function(doc, data, options) {
 
   }
 
-  const byTags = R.groupBy(obj => obj.tags || obj.type);
+  const byTags = R.groupBy(obj => {
+    return v.lowerCase(obj.tags);
+  });
 
   function buildGroup(data) {
     // createNewPage(data['label']);
 
-    _.reduce(byTags(data['collection']), (acc, cur, key) => {
+    const groups = byTags(data['collection']);
+
+    const response = _.reduce(groups, (acc, cur, key) => {
       return buildTable(key, cur, acc.x, acc.y);
     }, {x: margin, y: margin + 30})
   }
 
   return {
     render() {
+      
       createNewPage(data.title);
-
 
       data.collection.forEach(buildGroup)
 

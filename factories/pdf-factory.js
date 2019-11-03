@@ -34,6 +34,7 @@ const Factory = function() {
           return doc;
         },
         build(payload) {
+
           payload
             .data
 

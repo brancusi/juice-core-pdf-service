@@ -159,6 +159,8 @@ const Renderer = function(doc, data, options) {
 
   return {
     render() {
+      console.log("Hello Product");
+      
       createNewPage(data.title);
       data.collection
         .reduce((acc, cur) => {
