@@ -95,7 +95,7 @@ const Renderer = function(doc, data, options) {
   }
 
   function buildTableHeader(group, x, y) {
-
+    
     const precise = group.q.toFixed(1);
 
     buildRow(x, y - 7, [
@@ -151,7 +151,7 @@ const Renderer = function(doc, data, options) {
 
     doc
       .rect(position.x - PADDING, position.y - PADDING, COLUMN_WIDTH + (PADDING * 2), last.y - position.y + (PADDING * 2))
-      .dash(0)
+      .dash(1)
       .stroke();
 
     return last;

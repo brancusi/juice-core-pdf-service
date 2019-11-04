@@ -151,7 +151,7 @@ const Renderer = function(doc, data, options) {
 
     doc
       .rect(position.x - PADDING, position.y - PADDING, COLUMN_WIDTH + (PADDING * 2), last.y - position.y + (PADDING * 2))
-      .dash(0)
+      .dash(1)
       .stroke();
 
     return last;
